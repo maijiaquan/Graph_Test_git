@@ -13,17 +13,16 @@
 //
 
 
-
 #include <iostream>
 
-#define MaxInt 32767
+#define MaxInt 999
 #define MVNum 100
 #define OK 1
 #define ERROR 0
 
 using namespace std;
 
-//邻接矩阵
+//邻接矩阵    事先已经分配好了固定的空间，等待填充
 typedef struct {
     char vexs[MVNum];     // 顶点表
     int arcs[MVNum][MVNum]; //邻接矩阵
@@ -67,14 +66,11 @@ int LocateVex_ALG(ALGraph G,int v)
 }
 
 
-
 //普里姆算法 辅助数组
 typedef  struct closedge{
     char adjvex;
     int lowcost;
 }closedge,closedge_a[MVNum];
-
-
 
 int LocateVex_AMG(AMGraph G , char v){
     int i=0;
@@ -89,15 +85,47 @@ int LocateVex_AMG(AMGraph G , char v){
 /*创建邻接矩阵、无向图*/
 int CreateUDN(AMGraph &G , int mode)
 {
-    if(mode == 1)
+    if(mode == 1)   //使用已有无向图
     {
         G.vexnum = 5;
         G.arcnum = 6;
+       
         G.vexs[0] = 'a';
         G.vexs[1] = 'b';
         G.vexs[2] = 'c';
         G.vexs[3] = 'd';
         G.vexs[4] = 'e';
+        
+        G.arcs[0][0] = MaxInt;
+        G.arcs[0][1] = 1;
+        G.arcs[0][2] = MaxInt;
+        G.arcs[0][3] = 6;
+        G.arcs[0][4] = MaxInt;
+        
+        G.arcs[1][0] = 1;
+        G.arcs[1][1] = MaxInt;
+        G.arcs[1][2] = 2;
+        G.arcs[1][3] = MaxInt;
+        G.arcs[1][4] = 9;
+        
+        G.arcs[2][0] = MaxInt;
+        G.arcs[2][1] = 2;
+        G.arcs[2][2] = MaxInt;
+        G.arcs[2][3] = 3;
+        G.arcs[2][4] = 7;
+        
+        G.arcs[3][0] = 6;
+        G.arcs[3][1] = MaxInt;
+        G.arcs[3][2] = 3;
+        G.arcs[3][3] = MaxInt;
+        G.arcs[3][4] = MaxInt;
+        
+        G.arcs[4][0] = MaxInt;
+        G.arcs[4][1] = 9;
+        G.arcs[4][2] = 7;
+        G.arcs[4][3] = MaxInt;
+        G.arcs[4][4] = MaxInt;
+        
     }
     else
     {
@@ -135,6 +163,7 @@ int CreateUDN(AMGraph &G , int mode)
         }
     }
     return OK;
+
 }
 
 
