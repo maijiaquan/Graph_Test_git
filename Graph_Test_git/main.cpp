@@ -17,173 +17,124 @@
 #include <iostream>
 
 #define MaxInt 32767
-
 #define MVNum 100
-
 #define OK 1
-
 #define ERROR 0
 
 using namespace std;
 
-
-
-
-
-
-
 //邻接矩阵
-
-
-
 typedef struct {
-    
-    char vexs[MVNum];    // 顶点表
-    
+    char vexs[MVNum];     // 顶点表
     int arcs[MVNum][MVNum]; //邻接矩阵
-    
-    int vexnum,arcnum;
-    
+    int vexnum,arcnum;     //点数和边数
 }AMGraph;
 
-
-
-
-
 //邻接表
-
 typedef struct ArcNode{          //边表
-    
     int adjvex;
-    
     struct ArcNode *nextarc;
-    
     int info;
-    
 }ArcNode;
 
 
 
 typedef struct VNode{         //顶点表
-    
     char data;
-    
     ArcNode *firstacr;
-    
 }VNode,AdjList[MVNum];
 
 
 
 typedef struct {
-    
     AdjList vertices;        //结构体数组
-    
     int vexnum,arcnum;       //
-    
 }ALGraph;
 
-
-
 //普里姆算法 辅助数组
-
 typedef  struct closedge1{
-    
     char adjvex;
-    
     int lowcost;
-    
 }closedge1,closedge2[MVNum];
 
-
-
-int LocateVex_ALG(ALGraph G,int v){
-    
+int LocateVex_ALG(ALGraph G,int v)
+{
     int i=0;
-    
     while(v!= G.vertices[i].data)
-        
         i++;
     
     return i;
-    
 }
 
 
 
 //普里姆算法 辅助数组
-
 typedef  struct closedge{
-    
     char adjvex;
-    
     int lowcost;
-    
 }closedge,closedge_a[MVNum];
 
 
 
-int LocateVex_AMG(AMGraph G,char v){
-    
+int LocateVex_AMG(AMGraph G , char v){
     int i=0;
-    
-    while (v!= G.vexs[i])
-        
+    while (v != G.vexs[i])
+    {
         i++;
-    
+    }
     return i;
-    
 }
 
 
-
-
-
-int CreateUDN(AMGraph &G){        //创建邻接矩阵
-    
-    cout<<"请输入点数和边数";
-    
-    cin>>G.vexnum>>G.arcnum;
-    
-    for (int i=0; i<G.vexnum; i++){
-        
-        cout<<"请输入顶点";
-        
-        cin>>G.vexs[i];        //输入顶点表
-        
+/*创建邻接矩阵、无向图*/
+int CreateUDN(AMGraph &G , int mode)
+{
+    if(mode == 1)
+    {
+        G.vexnum = 5;
+        G.arcnum = 6;
+        G.vexs[0] = 'a';
+        G.vexs[1] = 'b';
+        G.vexs[2] = 'c';
+        G.vexs[3] = 'd';
+        G.vexs[4] = 'e';
     }
-    
-    for (int i=0; i<G.vexnum; i++)
+    else
+    {
+        /*输入顶点数和边数*/
+        cout<<"请输入点数和边数";
+        cin>>G.vexnum>>G.arcnum;
         
-        for (int j=0; j<G.vexnum; j++)
+        /*创建顶点表*/
+        for (int i = 0; i < G.vexnum; i++){
+            cout<<"请输入顶点";
+            cin>>G.vexs[i];
+        }
+        
+        /*创建邻接矩阵*/
+        for (int i=0; i<G.vexnum; i++)
+            for (int j=0; j<G.vexnum; j++)
+            {
+                G.arcs[i][j]=MaxInt;   //默认边与边之间的距离无穷大
+            }
+        
+        /*填充邻接矩阵，共有arcnum（边数）*2 个元素*/
+        for (int k=0; k < G.arcnum; k++)   //循环arcnum次
+        {
+            char v1,v2;
+            int w;
             
-            G.arcs[i][j]=MaxInt;
-    
-    
-    
-    for (int k=0; k<G.arcnum; k++) {
-        
-        char v1,v2;
-        
-        int w;
-        
-        int i,j;
-        
-        cout<<"请输入第"<<k+1<<"条边的两个点和权值w";
-        
-        cin>>v1>>v2>>w;
-        
-        i=LocateVex_AMG(G,v1);
-        
-        j=LocateVex_AMG(G,v2);
-        
-        G.arcs[i][j]=w;
-        
-        G.arcs[j][i]= G.arcs[i][j];
-        
+            cout<<"请输入第"<<k+1<<"条边的两个点和权值w";
+            cin>>v1>>v2>>w;
+            
+            int i=LocateVex_AMG(G,v1);
+            int j=LocateVex_AMG(G,v2);
+            
+            G.arcs[i][j] = w;
+            G.arcs[j][i]= G.arcs[i][j];   //对称点也要填充
+        }
     }
-    
     return OK;
-    
 }
 
 
@@ -390,56 +341,97 @@ void DFS2(ALGraph G,int v){    //邻接表图的遍历
 
 
 
+//int Min(closedge A){
+//
+//    for(int i=0;i<G.vexnum;i++){
+//
+//        int a=closedge[i].lowcost;
+//
+//        if
+//
+//            }
+//
+//    return i;
+//
+//}
 
+
+//
+//void MiniSpanTree_Prim(AMGraph G,char u){
+//
+//    int k=LocateVex_AMG(G, u);
+//
+//    for (int j=0; j<G.vexnum; j++)
+//
+//        if (j!=k)
+//
+//            closedge_a[j]={u,G.arcs[k][j]};
+//
+//    closedge_a[k].lowcost=0;
+//
+//    for{int i=1;i<G.vexnum;++i){
+//
+//        k=Min(closedge_a);
+//
+//        int u0=closedge_a[k].adjvex;
+//
+//        int v0=G.vexs[k];
+//
+//        cout<<u0<<v0<<endl;
+//
+//        closedge_a[k].lowcost=0;
+//
+//        for (int j=0; j<G.vexnum; j++) {
+//
+//            if(G.arcs[k][j]<closedge_a[j].lowcost)
+//
+//                closedge_a[j]={G.vexs[k],G.arcs[k][j]};
+//
+//        }
+//
+//    }
+//
+//        return OK;
+//
+//    }
+//
+
+int main() {
     
-    
-    
-    
-    int main() {
+    while (true) {
         
-        int temp=1;
+        cout<<endl<<"请选择"<<endl;
+        cout<<"1------邻接矩阵"<<endl;
+        cout<<"2------邻接表"<<endl;
+        cout<<"3------生成最小生成树_普里姆算法"<<endl;
         
-        while (temp) {
-            
-            cout<<endl<<"请选择"<<endl;
-            
-            cout<<"1------邻接矩阵"<<endl;
-            
-            cout<<"2------邻接表"<<endl;
-            
-            cout<<"3------生成最小生成树_普里姆算法"<<endl;
-            
-            int switchnumber;
-            
-            cin>>switchnumber;
-            
-            switch (switchnumber) {
-                    
-                case 1:{
-                    
-                    AMGraph G_M;
-                    
-                    CreateUDN(G_M);
-                    
-                    Print_AMG(G_M);}break;
-                    
-                case 2:{
-                    
-                    ALGraph G_L;
-                    
-                    CreateUDG(G_L);  // CHECK( G);//cout<<"请输入第一个深度优先搜索遍历的data";cin>>d;
-                    
-                    Print_ALG(G_L);
-                    
-                    cout<<"遍历结果如下"<<endl;
-                    
-                    int v=0; //邻接表图的遍历
-                    
-                    DFS2(G_L, v);}break;
-                    
-            }
-            
+        int a;
+        cin>>a;
+        
+        switch (a) {
+            case 1:{
+                cout<<"请选择：1使用已有无向图，2自定义无向图"<<endl;
+                int mode;
+                cin>>mode;
+                
+                AMGraph G_M;
+                
+                CreateUDN(G_M , mode);
+                Print_AMG(G_M);}break;
+                
+            case 2:{
+                ALGraph G_L;
+                CreateUDG(G_L);  // CHECK( G);//cout<<"请输入第一个深度优先搜索遍历的data";cin>>d;
+                Print_ALG(G_L);
+                
+                cout<<"遍历结果如下"<<endl;
+                
+                int v=0; //邻接表图的遍历
+                
+                DFS2(G_L, v);}break;
+                
         }
         
     }
     
+}
