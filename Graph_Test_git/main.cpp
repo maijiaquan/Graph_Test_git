@@ -172,6 +172,30 @@ int LocateVex_ALG(ALGraph G,int v)
     return i;
 }
 
+
+
+
+
+
+void initializeUDG(ALGraph &G, char v1, char v2)
+{
+    
+    int i = LocateVex_ALG(G,v1);
+    int j = LocateVex_ALG(G,v2);
+    
+    ArcNode *p1,*p2;
+    
+    p1 = new ArcNode;
+    p1->adjvex = j;
+    p1->nextarc = G.vertices[i].firstacr;     //step1：新来的结点p1要指向first所指向的结点
+    G.vertices[i].firstacr = p1;    //step2：first指向新来的结点p1
+    
+    p2=new ArcNode;
+    p2->adjvex = i;
+    p2->nextarc=G.vertices[j].firstacr;
+    G.vertices[j].firstacr=p2;// p2同理
+}
+
 /**********  创建邻接表（无向图）  **********/
 int CreateUDG(ALGraph &G, int mode){
     if(mode == 1)
@@ -183,12 +207,11 @@ int CreateUDG(ALGraph &G, int mode){
         G.vertices[2].data = 'c';
         G.vertices[3].data = 'd';
         G.vertices[4].data = 'e';
-        for (int i=0; i<G.vexnum; i++) {
+        for (int i=0; i<G.vexnum; i++)
+        {
             G.vertices[i].firstacr=NULL;
         }
-        
-        
-    
+
     }
     
     else{
@@ -196,32 +219,35 @@ int CreateUDG(ALGraph &G, int mode){
         cin>>G.vexnum>>G.arcnum;
         
         /*创建顶点表*/
-        for (int i=0; i<G.vexnum; i++) {
+        for (int i=0; i<G.vexnum; i++)
+        {
             cout<<"请输入第"<<i+1<<"个点的data";
             cin>>G.vertices[i].data;    //输入每个顶点的名称，eg.a,b,c
             G.vertices[i].firstacr=NULL;
         }
         
         /*创建边表*/
-        for (int k = 0; k < G.arcnum; k++) {
+        for (int k = 0; k < G.arcnum; k++)
+        {
             cout<<"请输入第"<<k+1<<"条边的两个点";
             char v1,v2;
             cin>>v1>>v2;
+            initializeUDG(G, v1, v2);
             
-            int i = LocateVex_ALG(G,v1);
-            int j = LocateVex_ALG(G,v2);
-            
-            ArcNode *p1,*p2;
-            
-            p1 = new ArcNode;
-            p1->adjvex = j;
-            p1->nextarc = G.vertices[i].firstacr;     //step1：新来的结点p1要指向first所指向的结点
-            G.vertices[i].firstacr = p1;    //step2：first指向新来的结点p1
-            
-            p2=new ArcNode;
-            p2->adjvex = i;
-            p2->nextarc=G.vertices[j].firstacr;
-            G.vertices[j].firstacr=p2;// p2同理
+//            int i = LocateVex_ALG(G,v1);
+//            int j = LocateVex_ALG(G,v2);
+//            
+//            ArcNode *p1,*p2;
+//            
+//            p1 = new ArcNode;
+//            p1->adjvex = j;
+//            p1->nextarc = G.vertices[i].firstacr;     //step1：新来的结点p1要指向first所指向的结点
+//            G.vertices[i].firstacr = p1;    //step2：first指向新来的结点p1
+//            
+//            p2=new ArcNode;
+//            p2->adjvex = i;
+//            p2->nextarc=G.vertices[j].firstacr;
+//            G.vertices[j].firstacr=p2;// p2同理
         }
     }
          return OK;
@@ -354,7 +380,6 @@ void DFS2(ALGraph G,int v){    //邻接表图的遍历
         p=p->nextarc;
         
     }
-    
 }
 
 
