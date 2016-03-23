@@ -22,35 +22,33 @@
 
 using namespace std;
 
-//邻接矩阵    事先已经分配好了固定的空间，等待填充
+/******  邻接矩阵  ******/  //  事先已经分配好了固定的空间，等待填充
 typedef struct {
     char vexs[MVNum];     // 顶点表
     int arcs[MVNum][MVNum]; //邻接矩阵
     int vexnum,arcnum;     //点数和边数
 }AMGraph;
 
-//邻接表
+
+/*******  邻接表  *******/
 typedef struct ArcNode{          //边表
     int adjvex;
     struct ArcNode *nextarc;
     int info;
 }ArcNode;
 
-
-
 typedef struct VNode{         //顶点表
     char data;
     ArcNode *firstacr;
 }VNode,AdjList[MVNum];
 
-
-
 typedef struct {
     AdjList vertices;        //结构体数组
-    int vexnum,arcnum;       //
+    int vexnum,arcnum;       //顶点数、边数
 }ALGraph;
 
-//普里姆算法 辅助数组
+
+/***** 普里姆算法 辅助数组  *****/
 typedef  struct closedge1{
     char adjvex;
     int lowcost;
@@ -72,6 +70,9 @@ typedef  struct closedge{
     int lowcost;
 }closedge,closedge_a[MVNum];
 
+
+
+/*根据数组名定位下标*/
 int LocateVex_AMG(AMGraph G , char v){
     int i=0;
     while (v != G.vexs[i])
@@ -168,22 +169,14 @@ int CreateUDN(AMGraph &G , int mode)
 
 
 
-
-
 int CreateUDG(ALGraph &G){        //创建邻接表
-    
     cout<<"请输入点数和边数";
-    
     cin>>G.vexnum>>G.arcnum;
     
     for (int i=0; i<G.vexnum; i++) {
-        
         cout<<"请输入第"<<i+1<<"个点的data";
-        
-        cin>>G.vertices[i].data;
-        
+        cin>>G.vertices[i].data;    //输入每个顶点的名称，eg.a,b,c
         G.vertices[i].firstacr=NULL;
-        
     }
     
     for (int k=0; k<G.arcnum; ++k) {
@@ -228,8 +221,6 @@ int CreateUDG(ALGraph &G){        //创建邻接表
 
 
 
-
-
 void CHECK(ALGraph G){
     
     char d;
@@ -249,9 +240,6 @@ void CHECK(ALGraph G){
     }
     
 }
-
-
-
 
 
 void Print_AMG(AMGraph G){
