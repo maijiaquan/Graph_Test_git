@@ -211,6 +211,13 @@ int CreateUDG(ALGraph &G, int mode){
         {
             G.vertices[i].firstacr=NULL;
         }
+        initializeUDG(G, 'a', 'b');
+        initializeUDG(G, 'a', 'd');
+        initializeUDG(G, 'b', 'c');
+        initializeUDG(G, 'b', 'e');
+        initializeUDG(G, 'c', 'd');
+        initializeUDG(G, 'c', 'e');
+
 
     }
     
@@ -233,21 +240,7 @@ int CreateUDG(ALGraph &G, int mode){
             char v1,v2;
             cin>>v1>>v2;
             initializeUDG(G, v1, v2);
-            
-//            int i = LocateVex_ALG(G,v1);
-//            int j = LocateVex_ALG(G,v2);
-//            
-//            ArcNode *p1,*p2;
-//            
-//            p1 = new ArcNode;
-//            p1->adjvex = j;
-//            p1->nextarc = G.vertices[i].firstacr;     //step1：新来的结点p1要指向first所指向的结点
-//            G.vertices[i].firstacr = p1;    //step2：first指向新来的结点p1
-//            
-//            p2=new ArcNode;
-//            p2->adjvex = i;
-//            p2->nextarc=G.vertices[j].firstacr;
-//            G.vertices[j].firstacr=p2;// p2同理
+
         }
     }
          return OK;
@@ -466,7 +459,11 @@ int main() {
                 
             case 2:{
                 ALGraph G_L;
-                CreateUDG(G_L , 2);  // CHECK( G);//cout<<"请输入第一个深度优先搜索遍历的data";cin>>d;
+                
+                cout<<"请选择：1使用已有无向图，2自定义无向图"<<endl;
+                int ALG_mode;
+                cin>>ALG_mode;
+                CreateUDG(G_L , ALG_mode);  // CHECK( G);//cout<<"请输入第一个深度优先搜索遍历的data";cin>>d;
                 Print_ALG(G_L);
                 
                 cout<<"遍历结果如下"<<endl;
