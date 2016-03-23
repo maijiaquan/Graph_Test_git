@@ -30,22 +30,7 @@ typedef struct {
 }AMGraph;
 
 
-/*******  邻接表  *******/
-typedef struct ArcNode{          //边表
-    int adjvex;
-    struct ArcNode *nextarc;
-    int info;
-}ArcNode;
 
-typedef struct VNode{         //顶点表
-    char data;
-    ArcNode *firstacr;
-}VNode,AdjList[MVNum];
-
-typedef struct {
-    AdjList vertices;        //结构体数组
-    int vexnum,arcnum;       //顶点数、边数
-}ALGraph;
 
 
 /***** 普里姆算法 辅助数组  *****/
@@ -54,14 +39,7 @@ typedef  struct closedge1{
     int lowcost;
 }closedge1,closedge2[MVNum];
 
-int LocateVex_ALG(ALGraph G,int v)
-{
-    int i=0;
-    while(v!= G.vertices[i].data)
-        i++;
-    
-    return i;
-}
+
 
 
 //普里姆算法 辅助数组
@@ -164,59 +142,89 @@ int CreateUDN(AMGraph &G , int mode)
         }
     }
     return OK;
-
 }
 
 
 
-int CreateUDG(ALGraph &G){        //创建邻接表
-    cout<<"请输入点数和边数";
-    cin>>G.vexnum>>G.arcnum;
+/***********  邻接表结构定义  **************/
+typedef struct ArcNode{          //边表的结点
+    int adjvex;                 //该顶点的下标
+    struct ArcNode *nextarc;      //指向下一顶点
+    int info;                  //权值
+}ArcNode;
+
+typedef struct VNode{         //顶点表中 每个变量的结构
+    char data;                //顶点名
+    ArcNode *firstacr;        //该顶点指向的第一条边，从而获得了该顶点的整个边表
+}VNode,AdjList[MVNum];        //顶点表是个顺序表，这种写法也可以！？
+
+typedef struct {
+    AdjList vertices;        //顶点表结构体数组，已预先分配好100个空间？
+    int vexnum,arcnum;       //顶点数、边数
+}ALGraph;
+
+//////////*** 下标转换函数 ***////////////////////
+int LocateVex_ALG(ALGraph G,int v)
+{
+    int i=0;
+    while(v!= G.vertices[i].data)
+        i++;
+    return i;
+}
+
+/**********  创建邻接表（无向图）  **********/
+int CreateUDG(ALGraph &G, int mode){
+    if(mode == 1)
+    {
+        G.vexnum = 5;
+        G.arcnum = 6;
+        G.vertices[0].data = 'a';
+        G.vertices[1].data = 'b';
+        G.vertices[2].data = 'c';
+        G.vertices[3].data = 'd';
+        G.vertices[4].data = 'e';
+        for (int i=0; i<G.vexnum; i++) {
+            G.vertices[i].firstacr=NULL;
+        }
+        
+        
     
-    for (int i=0; i<G.vexnum; i++) {
-        cout<<"请输入第"<<i+1<<"个点的data";
-        cin>>G.vertices[i].data;    //输入每个顶点的名称，eg.a,b,c
-        G.vertices[i].firstacr=NULL;
     }
     
-    for (int k=0; k<G.arcnum; ++k) {
+    else{
+        cout<<"请输入点数和边数";
+        cin>>G.vexnum>>G.arcnum;
         
-        char v1,v2;
+        /*创建顶点表*/
+        for (int i=0; i<G.vexnum; i++) {
+            cout<<"请输入第"<<i+1<<"个点的data";
+            cin>>G.vertices[i].data;    //输入每个顶点的名称，eg.a,b,c
+            G.vertices[i].firstacr=NULL;
+        }
         
-        int i,j;
-        
-        ArcNode *p1,*p2;
-        
-        cout<<"请输入第"<<k+1<<"条边的两个点";
-        
-        cin>>v1>>v2;
-        
-        i=LocateVex_ALG(G,v1);
-        
-        j=LocateVex_ALG(G,v2);
-        
-        p1=new ArcNode;
-        
-        p1->adjvex=j;
-        
-        p1->nextarc=G.vertices[i].firstacr;
-        
-        G.vertices[i].firstacr=p1;
-        
-        p2=new ArcNode;
-        
-        p2->adjvex=i;
-        
-        p2->nextarc=G.vertices[j].firstacr;
-        
-        G.vertices[j].firstacr=p2;// 将p1改成p2 2015.6.12 0：40
-        
+        /*创建边表*/
+        for (int k = 0; k < G.arcnum; k++) {
+            cout<<"请输入第"<<k+1<<"条边的两个点";
+            char v1,v2;
+            cin>>v1>>v2;
+            
+            int i = LocateVex_ALG(G,v1);
+            int j = LocateVex_ALG(G,v2);
+            
+            ArcNode *p1,*p2;
+            
+            p1 = new ArcNode;
+            p1->adjvex = j;
+            p1->nextarc = G.vertices[i].firstacr;     //step1：新来的结点p1要指向first所指向的结点
+            G.vertices[i].firstacr = p1;    //step2：first指向新来的结点p1
+            
+            p2=new ArcNode;
+            p2->adjvex = i;
+            p2->nextarc=G.vertices[j].firstacr;
+            G.vertices[j].firstacr=p2;// p2同理
+        }
     }
-    
-    
-    
-    return OK;
-    
+         return OK;
 }
 
 
@@ -259,7 +267,6 @@ void Print_AMG(AMGraph G){
     }
     
     
-    
 }
 
 
@@ -287,11 +294,7 @@ void Print_ALG(ALGraph G){
         }
         
         cout<<endl;
-        
     }
-    
-    
-    
 }
 
 
@@ -438,7 +441,7 @@ int main() {
                 
             case 2:{
                 ALGraph G_L;
-                CreateUDG(G_L);  // CHECK( G);//cout<<"请输入第一个深度优先搜索遍历的data";cin>>d;
+                CreateUDG(G_L , 2);  // CHECK( G);//cout<<"请输入第一个深度优先搜索遍历的data";cin>>d;
                 Print_ALG(G_L);
                 
                 cout<<"遍历结果如下"<<endl;
@@ -448,7 +451,5 @@ int main() {
                 DFS2(G_L, v);}break;
                 
         }
-        
     }
-    
 }
