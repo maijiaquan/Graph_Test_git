@@ -12,7 +12,6 @@
 
 //
 
-
 #include <iostream>
 
 #define MaxInt 999
@@ -30,23 +29,6 @@ typedef struct {
 }AMGraph;
 
 
-
-
-
-/***** 普里姆算法 辅助数组  *****/
-typedef  struct closedge1{
-    char adjvex;
-    int lowcost;
-}closedge1,closedge2[MVNum];
-
-
-
-
-//普里姆算法 辅助数组
-typedef  struct closedge{
-    char adjvex;
-    int lowcost;
-}closedge,closedge_a[MVNum];
 
 
 
@@ -263,9 +245,7 @@ void CHECK(ALGraph G){
         i=LocateVex_ALG(G,d);
         
         cout<<"data的adjvex为"<<i;
-        
     }
-    
 }
 
 
@@ -351,27 +331,19 @@ void DFS1(ALGraph G,char d){
 
 
 void DFS2(ALGraph G,int v){    //邻接表图的遍历
-    
-    ArcNode *p;
-    
-    int w;
-    
     cout<<v;
+    visited[v] = true;
     
-    visited[v]=true;
+    ArcNode *p = G.vertices[v].firstacr;   //p指向第一个邻接点
     
-    p=G.vertices[v].firstacr;
-    
-    while (p!=NULL) {
-        
-        w=p->adjvex;
-        
+    while(p != NULL)
+    {
+        int w = p->adjvex;   //取下标
         if(!visited[w])
-            
+        {
             DFS2(G, w);
-        
-        p=p->nextarc;
-        
+        }
+        p = p->nextarc;   //w被访问过了
     }
 }
 
